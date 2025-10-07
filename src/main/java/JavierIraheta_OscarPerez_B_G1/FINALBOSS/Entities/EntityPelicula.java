@@ -1,7 +1,8 @@
 package JavierIraheta_OscarPerez_B_G1.FINALBOSS.Entities;
 
-import jakarta.persistence.*;
 import java.util.Date;
+
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -24,10 +25,10 @@ public class EntityPelicula {
     private String genero;
 
     @Column(name = "ANO_ESTRENO")
-    private Integer anioEstreno;
+    private Number anioEstreno;
 
     @Column(name = "DURACION_MIN")
-    private Integer duracionMin;
+    private Number duracionMin;
 
     @Column(name = "FECHA_CREACION")
     @Temporal(TemporalType.DATE)

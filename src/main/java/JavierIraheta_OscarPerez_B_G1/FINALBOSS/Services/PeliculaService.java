@@ -1,5 +1,11 @@
 package JavierIraheta_OscarPerez_B_G1.FINALBOSS.Services;
 
+import JavierIraheta_OscarPerez_B_G1.FINALBOSS.Entities.EntityPelicula;
+import JavierIraheta_OscarPerez_B_G1.FINALBOSS.Models.DTO.PeliculaDTO;
+import JavierIraheta_OscarPerez_B_G1.FINALBOSS.Repositories.RepositoryPelicula;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,9 +14,9 @@ import java.util.stream.Collectors;
 public class PeliculaService {
 
     @Autowired
-    private PeliculaRepository peliculaRepository;
+    private RepositoryPelicula peliculaRepository;
 
-    private PeliculaDTO toDTO(Pelicula entity) {
+    private PeliculaDTO convertToDTO(EntityPelicula entity) {
         PeliculaDTO dto = new PeliculaDTO();
         dto.setIdPelicula(entity.getIdPelicula());
         dto.setTitulo(entity.getTitulo());
@@ -22,8 +28,8 @@ public class PeliculaService {
         return dto;
     }
 
-    private Pelicula toEntity(PeliculaDTO dto) {
-        Pelicula entity = new Pelicula();
+    private EntityPelicula convertToEntity(PeliculaDTO dto) {
+        EntityPelicula entity = new EntityPelicula();
         entity.setTitulo(dto.getTitulo());
         entity.setDirector(dto.getDirector());
         entity.setGenero(dto.getGenero());
@@ -35,15 +41,15 @@ public class PeliculaService {
 
     public List<PeliculaDTO> obtenerTodasLasPeliculas() {
         return peliculaRepository.findAll().stream()
-                .map(this::toDTO)
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     public PeliculaDTO obtenerPeliculaPorId(Long id) {
-        Pelicula pelicula = peliculaRepository.findById(id)
+        EntityPelicula pelicula = peliculaRepository.findById(id)
 
                 .orElseThrow(() -> new RuntimeException("Película no encontrada con ID: " + id)); 
-        return toDTO(pelicula);
+        return convertToDTO(pelicula);
     }
     
     public PeliculaDTO crearPelicula(PeliculaDTO peliculaDTO) {
@@ -52,14 +58,14 @@ public class PeliculaService {
             throw new RuntimeException("Ya existe una película con el mismo título y año de estreno.");
         }
         
-        Pelicula pelicula = toEntity(peliculaDTO);
+        EntityPelicula pelicula = convertToEntity(peliculaDTO);
         pelicula.setFechaCreacion(new Date()); // Establecer la fecha de registro
-        Pelicula guardada = peliculaRepository.save(pelicula);
-        return toDTO(guardada);
+        EntityPelicula guardada = peliculaRepository.save(pelicula);
+        return convertToDTO(guardada);
     }
 
     public PeliculaDTO actualizarPelicula(Long id, PeliculaDTO peliculaDTO) {
-        Pelicula peliculaExistente = peliculaRepository.findById(id)
+        EntityPelicula peliculaExistente = peliculaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Película no encontrada para actualizar con ID: " + id));
 
         peliculaExistente.setTitulo(peliculaDTO.getTitulo());
@@ -68,8 +74,8 @@ public class PeliculaService {
         peliculaExistente.setAnioEstreno(peliculaDTO.getAnioEstreno());
         peliculaExistente.setDuracionMin(peliculaDTO.getDuracionMin());
         
-        Pelicula actualizada = peliculaRepository.save(peliculaExistente);
-        return toDTO(actualizada);
+        EntityPelicula actualizada = peliculaRepository.save(peliculaExistente);
+        return convertToDTO(actualizada);
     }
     
     public void eliminarPelicula(Long id) {
