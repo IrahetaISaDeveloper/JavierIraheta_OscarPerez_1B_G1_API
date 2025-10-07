@@ -2,12 +2,15 @@ package JavierIraheta_OscarPerez_B_G1.FINALBOSS.Controller;
 
 import JavierIraheta_OscarPerez_B_G1.FINALBOSS.Models.DTO.PeliculaDTO;
 import JavierIraheta_OscarPerez_B_G1.FINALBOSS.Services.PeliculaService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/peliculas")
@@ -29,9 +32,28 @@ public class ControllerPelicula {
     }
     
     @PostMapping("/newPelicula")
-    public ResponseEntity<PeliculaDTO> createPelicula(@RequestBody PeliculaDTO peliculaDTO) {
-        PeliculaDTO nuevaPelicula = peliculaService.crearPelicula(peliculaDTO);
-        return new ResponseEntity<>(nuevaPelicula, HttpStatus.CREATED);
+    public ResponseEntity<PeliculaDTO> createPelicula(@Valid @RequestBody PeliculaDTO  Json, HttpServletRequest request) {
+        try{
+            PeliculaDTO respuesta = peliculaService.crearPelicula(Json);
+            if (respuesta == null){
+                return ResponseEntity.badRequest().body(Map.of(
+                        "status", "Insercion fallida",
+                        "errorType", "VALIDATION_ERROR",
+                        "message", "Los datos no pudieron ser registrados"
+                ));
+            }
+            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                    "status", "succes",
+                    "data", respuesta
+            ));
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "Status",
+                    "message", "Error no controlado al registrar la pelicula",
+                    "detail", e.getMessage()
+            ));
+        }
+
     }
 
 
