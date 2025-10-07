@@ -19,9 +19,9 @@ public class PeliculaDTO {
 
     private String genero;
 
-    private Number anioEstreno;
+    private Integer anioEstreno;
 
-    private Number duracionMin;
+    private Integer duracionMin;
 
     private Date fechaCreacion;
 }

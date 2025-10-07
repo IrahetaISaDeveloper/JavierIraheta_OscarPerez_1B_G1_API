@@ -65,7 +65,7 @@ public class PeliculaService {
         }
         
         EntityPelicula pelicula = convertToEntity(peliculaDTO);
-        pelicula.setFechaCreacion(new Date()); 
+        pelicula.setFechaCreacion(new java.util.Date());
         EntityPelicula guardada = peliculaRepository.save(pelicula);
         return convertToDTO(guardada);
     }

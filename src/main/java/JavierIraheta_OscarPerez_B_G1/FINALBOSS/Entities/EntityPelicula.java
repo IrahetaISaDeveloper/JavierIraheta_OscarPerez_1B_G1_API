@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "PELICULAS")
+@Table(name = "peliculas")
 public class EntityPelicula {
 
     @Id
@@ -25,10 +25,10 @@ public class EntityPelicula {
     private String genero;
 
     @Column(name = "ANO_ESTRENO")
-    private Number anioEstreno;
+    private Integer anioEstreno;
 
     @Column(name = "DURACION_MIN")
-    private Number duracionMin;
+    private Integer duracionMin;
 
     @Column(name = "FECHA_CREACION")
     @Temporal(TemporalType.DATE)

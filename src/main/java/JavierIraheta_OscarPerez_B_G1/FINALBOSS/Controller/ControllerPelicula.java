@@ -21,7 +21,6 @@ public class ControllerPelicula {
     @Autowired
     private PeliculaService peliculaService;
 
-    // Métodos GET (sin cambios en la estructura de errores)
     @GetMapping("/getAllPeliculas")
     public ResponseEntity<List<PeliculaDTO>> getAllPeliculas() {
         List<PeliculaDTO> peliculas = peliculaService.obtenerTodasLasPeliculas();
