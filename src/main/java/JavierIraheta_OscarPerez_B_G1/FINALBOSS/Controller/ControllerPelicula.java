@@ -24,12 +24,21 @@ public class ControllerPelicula {
     // Métodos GET (sin cambios en la estructura de errores)
     @GetMapping("/getAllPeliculas")
     public ResponseEntity<List<PeliculaDTO>> getAllPeliculas() {
-        return ResponseEntity.ok(peliculaService.obtenerTodasLasPeliculas());
+        List<PeliculaDTO> peliculas = peliculaService.obtenerTodasLasPeliculas();
+        System.out.println("Cantidad de películas encontradas: " + (peliculas != null ? peliculas.size() : 0)); // Log para depuración
+        if (peliculas == null || peliculas.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(peliculas);
     }
 
     @GetMapping("/getPeliculaById/{id}")
     public ResponseEntity<PeliculaDTO> getPeliculaById(@PathVariable Long id) {
-        return ResponseEntity.ok(peliculaService.obtenerPeliculaPorId(id));
+        PeliculaDTO pelicula = peliculaService.obtenerPeliculaPorId(id);
+        if (pelicula == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(pelicula);
     }
     
 
@@ -55,7 +64,7 @@ public class ControllerPelicula {
                 ));
             }
             return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                    "status", "succes",
+                    "status", "success", // corregido el typo aquí
                     "data", respuesta
             ));
         } catch (RuntimeException e) {

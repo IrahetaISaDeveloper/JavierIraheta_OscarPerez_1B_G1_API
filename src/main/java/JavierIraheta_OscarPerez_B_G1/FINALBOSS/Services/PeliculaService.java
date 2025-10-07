@@ -30,6 +30,10 @@ public class PeliculaService {
 
     private EntityPelicula convertToEntity(PeliculaDTO dto) {
         EntityPelicula entity = new EntityPelicula();
+        // Asigna el ID si está presente en el DTO (útil para actualizaciones)
+        if (dto.getIdPelicula() != null) {
+            entity.setIdPelicula(dto.getIdPelicula());
+        }
         entity.setTitulo(dto.getTitulo());
         entity.setDirector(dto.getDirector());
         entity.setGenero(dto.getGenero());
@@ -39,7 +43,12 @@ public class PeliculaService {
     }
 
     public List<PeliculaDTO> obtenerTodasLasPeliculas() {
-        return peliculaRepository.findAll().stream()
+        List<EntityPelicula> entities = peliculaRepository.findAll();
+        System.out.println("Service - cantidad de películas encontradas: " + (entities != null ? entities.size() : 0)); // Log para depuración
+        for (EntityPelicula e : entities) {
+            System.out.println("Entidad: id=" + e.getIdPelicula() + ", titulo=" + e.getTitulo() + ", director=" + e.getDirector() + ", genero=" + e.getGenero() + ", año=" + e.getAnioEstreno() + ", duracion=" + e.getDuracionMin());
+        }
+        return entities.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
@@ -84,4 +93,3 @@ public class PeliculaService {
         peliculaRepository.deleteById(id);
     }
 }
-
