@@ -32,7 +32,7 @@ public class ControllerPelicula {
         return ResponseEntity.ok(peliculaService.obtenerPeliculaPorId(id));
     }
     
-    // Método POST con manejo de errores extendido (similar a tu imagen de 'RegistrarDatos')
+
     @PostMapping("/newPelicula")
     public ResponseEntity<Map<String, Object>> createPelicula(@Valid @RequestBody PeliculaDTO Json, BindingResult bindingResult, HttpServletRequest request) {
         
@@ -76,11 +76,11 @@ public class ControllerPelicula {
     }
 
 
-    // Método PUT modificado (similar a tu imagen de 'editarUsuario')
+
     @PutMapping("/updatePelicula/{id}")
     public ResponseEntity<Map<String, Object>> updatePelicula(@PathVariable Long id, @Valid @RequestBody PeliculaDTO Json, BindingResult bindingResult) {
         
-        // 1. Manejo de errores de validación de DTO (BindingResult)
+
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             bindingResult.getFieldErrors().forEach(error -> 
@@ -90,21 +90,21 @@ public class ControllerPelicula {
         }
 
         try {
-            // Llama al servicio para actualizar
+
             PeliculaDTO actualizada = peliculaService.actualizarPelicula(id, Json);
             
-            // Éxito
+
             return ResponseEntity.ok(Map.of(
                 "status", "success", 
                 "data", actualizada
             ));
 
         } catch (RuntimeException e) {
-            // 2. Manejo de excepciones de negocio
+
             if (e.getMessage().contains("no encontrada")) {
                 return ResponseEntity.notFound().build();
             }
-            // Puedes agregar aquí el manejo de "Datos Duplicados" si aplica al update
+
             if (e.getMessage().contains("Ya existe una película")) {
                  return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
                     "error", "Datos Duplicados",
@@ -112,7 +112,7 @@ public class ControllerPelicula {
                 ));
             }
             
-            // 3. Manejo de error interno
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
                 "status", "Error",
                 "message", "Error no controlado al actualizar la película",
@@ -121,7 +121,7 @@ public class ControllerPelicula {
         }
     }
 
-    // Método DELETE (sin cambios en la estructura de errores)
+
     @DeleteMapping("/deletePelicula/{id}")
     public ResponseEntity<Void> deletePelicula(@PathVariable Long id) {
         peliculaService.eliminarPelicula(id);
