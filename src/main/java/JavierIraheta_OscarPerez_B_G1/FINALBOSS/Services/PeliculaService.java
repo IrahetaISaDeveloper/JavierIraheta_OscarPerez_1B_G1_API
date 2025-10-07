@@ -38,7 +38,6 @@ public class PeliculaService {
         return entity;
     }
 
-
     public List<PeliculaDTO> obtenerTodasLasPeliculas() {
         return peliculaRepository.findAll().stream()
                 .map(this::convertToDTO)
@@ -46,8 +45,8 @@ public class PeliculaService {
     }
 
     public PeliculaDTO obtenerPeliculaPorId(Long id) {
+        // Usa orElseThrow para lanzar una excepción si no se encuentra
         EntityPelicula pelicula = peliculaRepository.findById(id)
-
                 .orElseThrow(() -> new RuntimeException("Película no encontrada con ID: " + id)); 
         return convertToDTO(pelicula);
     }
@@ -55,25 +54,31 @@ public class PeliculaService {
     public PeliculaDTO crearPelicula(PeliculaDTO peliculaDTO) {
         // Lógica de validación de unicidad (UQ_PELICULAS_TITULO_ANO)
         if (peliculaRepository.findByTituloAndAnioEstreno(peliculaDTO.getTitulo(), peliculaDTO.getAnioEstreno()) != null) {
+            // Lanza una excepción para que el controlador la pueda capturar y manejar como CONFLICT
             throw new RuntimeException("Ya existe una película con el mismo título y año de estreno.");
         }
         
         EntityPelicula pelicula = convertToEntity(peliculaDTO);
-        pelicula.setFechaCreacion(new Date()); // Establecer la fecha de registro
+        pelicula.setFechaCreacion(new Date()); 
         EntityPelicula guardada = peliculaRepository.save(pelicula);
         return convertToDTO(guardada);
     }
 
+    // Método actualizado para seguir el patrón de tus notas
     public PeliculaDTO actualizarPelicula(Long id, PeliculaDTO peliculaDTO) {
+        
+        // 1. Buscar la entidad existente, lanzando excepción si no se encuentra (similar a tu línea `orElseThrow`)
         EntityPelicula peliculaExistente = peliculaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Película no encontrada para actualizar con ID: " + id));
 
+        // 2. Actualizar solo los campos permitidos/enviados
         peliculaExistente.setTitulo(peliculaDTO.getTitulo());
         peliculaExistente.setDirector(peliculaDTO.getDirector());
         peliculaExistente.setGenero(peliculaDTO.getGenero());
         peliculaExistente.setAnioEstreno(peliculaDTO.getAnioEstreno());
         peliculaExistente.setDuracionMin(peliculaDTO.getDuracionMin());
         
+        // 3. Guardar y retornar el DTO actualizado
         EntityPelicula actualizada = peliculaRepository.save(peliculaExistente);
         return convertToDTO(actualizada);
     }
@@ -81,5 +86,5 @@ public class PeliculaService {
     public void eliminarPelicula(Long id) {
         peliculaRepository.deleteById(id);
     }
-
 }
+
